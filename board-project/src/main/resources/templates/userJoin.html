@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Bulletin Board</title>
+    <th:block th:replace="fragments/config::config"></th:block>
+</head>
+<body>
+<th:block th:replace="fragments/header::header"></th:block>
+        <!-- ページの内容 -->
+        <div class="container-sm">
+            <div class="justify-content-center">
+                <div class="my-3 mb-3">
+                    <div class="text-center">
+                        <img src="/images/image.png" alt="My Image" width="500"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 register-container">
+                    <form id="user" th:action="@{/user/join}" method="post" class="row g-3" >
+                        <div class="col-6">
+                            <label class="mb-0">アカウント</label>
+                            <div class="input-group mt-2">
+                                <input type="text" name="account" id="account" class="form-control" oninput="oninputId(this)"
+                                       placeholder="アカウント"/>
+                                <input type="button" class="btn btn-primary" value="確認する" onclick="checkId()"/>
+                            </div>
+                        </div>
+                        <div class="col-5 mt-5">
+                            <input type="text" name="checkResult" id="checkResult" class="form-control border-0 text-secondary bg-transparent" disabled/>
+                        </div>
+                        <div class="col-1">
+                            <input type="hidden" name="accountHidden" id="accountHidden" class="form-control"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">パスワード</label>
+                            <input type="password" name="password" id="password" class="form-control" oninput="oninputPw(this)"
+                                   placeholder="パスワード"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">パスワード再確認</label>
+                            <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control"
+                                   oninput="oninputPw(this)" placeholder="パスワード再確認"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">名前</label>
+                            <input type="text" name="name" id="userName" class="form-control" maxlength="20" placeholder="名前"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">電話番号</label>
+                            <input type="text" name="phone" id="phone" class="form-control" oninput="oninputNumber(this)"
+                                   maxlength="11" placeholder="電話番号１１桁"/>
+                        </div>
+                        <div class="col-12">
+                            <label class="mb-0">メールアドレス</label>
+                            <div class="input-group mt-2">
+                                <input type="text" name="email1" id="email1" class="form-control" oninput="oninputEmail(this)"
+                                       placeholder="メールアドレス"/>
+                                <div class="input-group-text">@</div>
+                                <input type="text" name="email2" id="email2" class="form-control" placeholder="直接入力"/>
+                                <select class="form-select" id="emailList">
+                                    <option value="">直接入力</option>
+                                    <option value="yahoo.co.jp">yahoo.co.jp</option>
+                                    <option value="gmail.co.jp">gmail.co.jp</option>
+                                    <option value="outlook.co.jp">outlook.co.jp</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 text-center mt-4">
+                            <input type="button" class="btn btn-primary" value="登録" onclick="goSave();"/>
+                        </div>
+                        <div class="col-12 mb-5 text-center">
+                            <a th:href="@{/user/login}">すでにアカウントがありますか？ログイン</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // 会員登録
+    function goSave(){
+        var form = document.getElementById("user");
+
+        // 入力値と長さのチェック
+        if (valueCheck(form.account, 6, 20, "アカウント")) return false;
+        if (valueCheck(form.password, 6, 20, "パスワード")) return false;
+        if (valueCheck(form.passwordConfirm, 6, 20, "パスワード再確認")) return false;
+        if (form.password.value !== form.passwordConfirm.value) {　// パスワード確認が一致するかチェック
+            alert("パスワード再確認を確認してください！");
+            form.passwordConfirm.focus();
+            return false;
+        }
+        if (valueCheck(form.userName, 1, 20, "名前")) return false;
+        if (valueCheck(form.phone, 10, 11, "電話番号")) return false;
+        if (valueCheck(form.email1, 3, 20, "メールアドレス")) return false;
+        if (emailCheck(form.email2) || form.email2.value === "") return false;
+
+        if (form.checkResult.value !== "使用可能なアカウントです。" || form.account.value !== form.accountHidden.value){
+            alert("アカウントを確認してください。");
+            form.account.focus();
+            return false;
+        }
+
+        // フォームを送信
+        form.submit();
+    }
+
+    // アカウント使用可能有無チェック
+    function checkId(){
+        var account = document.getElementById("account");
+        var accountHidden = document.getElementById("accountHidden");
+        var checkResult = document.getElementById("checkResult");
+
+        // 入力値と長さのチェック
+        if (valueCheck(account, 6, 20, "アカウント")) return false;
+
+        // サーバーに非同期リクエス
+        $.ajax({
+            type: "GET",
+            url: "/api/account/"+ account.value +"/exists",
+            success : function(data) {
+                if (data) {
+                    checkResult.value = "すでに使用中のアカウントです。";
+                    accountHidden.value = "";
+
+                } else {
+                    checkResult.value = "使用可能なアカウントです。";
+                    accountHidden.value = account.value;
+                }
+            },
+            error : function(error) {
+                alert("error : " + error);　//　エラーメッセージ
+            }
+        });
+    }
+
+    // メール入力の無効化
+    const domainListEl = document.querySelector('#emailList');
+    const domainInputEl = document.querySelector('#email2');
+
+    domainListEl.addEventListener('change', (event) => {
+        if (event.target.value !== '') {
+            domainInputEl.value = event.target.value;
+            domainInputEl.readOnly = true;
+        } else {
+            domainInputEl.value = '';
+            domainInputEl.readOnly = false;
+        }
+    });
+
+    // 数字の正規表現
+    function oninputNumber(target) {
+        target.value = target.value.replace(/[^0-9]/g, '');
+    }
+
+    function oninputId(target) {
+        target.value = target.value.replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function oninputPw(target) {
+        target.value = target.value.replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function oninputEmail(target) {
+        target.value = target.value.replace(/[^a-zA-Z0-9]/g, '');
+    }
+</script>
+</body>
+</html>

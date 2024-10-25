@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script th:inline="javascript">
+
+        var message = [[${message}]];　//　メッセージを取得
+        alert(message);　//　メッセージを表示
+        location.replace([[${viewPage}]]);　//　取得したページに移動
+
+    </script>
+</body>
+</html>
