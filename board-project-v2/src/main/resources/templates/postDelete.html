@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 削除フォーム-->
+<form id="deleteForm" th:action="@{/board/post/{postId}/delete(postId=${dto.id})}" method="post"></form>
+
+<script th:inline="javascript">
+    var deleteForm = document.getElementById("deleteForm"); // フォーム要素を取得
+
+    // 削除確認の確認
+    if (confirm("本当に削除しますか？")) {
+        deleteForm.submit(); // 削除フォームを送信
+    } else {
+        window.history.back(); // 前のページに戻る
+    }
+</script>
+</body>
