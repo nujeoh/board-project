@@ -44,7 +44,6 @@ public class NestedReplyService {
         var entity = NestedReplyEntity.builder()
                 .reply(replyEntity)
                 .user(userEntity)
-                .userName(userEntity.getName())
                 .content(nestedReplyRequestDTO.getContent())
                 .repliedAt(LocalDateTime.now())
                 .build();

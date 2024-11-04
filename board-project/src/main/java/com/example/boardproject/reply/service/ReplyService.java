@@ -49,7 +49,6 @@ public class ReplyService {
         var entity = ReplyEntity.builder()
                 .post(postEntity)
                 .user(userEntity)
-                .userName(userEntity.getName())
                 .content(replyRequestDTO.getContent())
                 .repliedAt(LocalDateTime.now())
                 .build();

@@ -14,7 +14,7 @@ public class NestedReplyConverter {
                 .id(nestedReplyEntity.getId())
                 .replyId(nestedReplyEntity.getReply().getId())
                 .userId(nestedReplyEntity.getUser().getId())
-                .userName(nestedReplyEntity.getUserName())
+                .userName(nestedReplyEntity.getUser().getName())
                 .content(nestedReplyEntity.getContent().replace("\n", "<br/>"))
                 .repliedAt(nestedReplyEntity.getRepliedAt())
                 .build()

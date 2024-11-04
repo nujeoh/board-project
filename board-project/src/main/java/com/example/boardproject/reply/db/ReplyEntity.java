@@ -27,8 +27,6 @@ public class ReplyEntity {
     @ManyToOne // 連関関係マッピング
     private UserEntity user; // replyテーブルのuser_idというcolumnを通じてUserEntity(コメント情報)を満たす
 
-    private String userName;
-
     @Column(columnDefinition = "TEXT")
     private String content;
 

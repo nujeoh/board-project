@@ -25,7 +25,7 @@ public class ReplyConverter {
                 .id(replyEntity.getId())
                 .postId(replyEntity.getPost().getId())
                 .userId(replyEntity.getUser().getId())
-                .userName(replyEntity.getUserName())
+                .userName(replyEntity.getUser().getName())
                 .content(replyEntity.getContent().replace("\n", "<br/>"))
                 .repliedAt(replyEntity.getRepliedAt())
                 .nestedReplyEntityList(nestedReplyList)
